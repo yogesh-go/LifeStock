@@ -15,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/goals', require('./routes/goalRoutes'));
+app.use('/api/stock', require('./routes/stockRoutes'));
 
 // Test route
 app.get('/', (req, res) => {
