@@ -66,6 +66,16 @@ exports.buyShares = async (req, res) => {
     });
     await transaction.save();
 
+    // Emit real-time price update to all users watching this goal
+    const io = req.app.get('io');
+    io.to(goalId).emit('priceUpdate', {
+      goalId,
+      newPrice,
+      buyerCount: goal.buyerCount,
+      sellerCount: goal.sellerCount,
+      totalShares: goal.totalShares
+    });
+
     res.json({
       msg: 'Shares bought successfully',
       newPrice,
