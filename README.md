@@ -33,3 +33,36 @@ npm run dev
 
 ## Project Status
 🚧 Active Development — Week 1 of 6
+
+## API Endpoints
+
+### Auth
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/auth/register | Register user |
+| POST | /api/auth/login | Login user |
+| GET | /api/auth/me | Get logged in user |
+
+### Goals
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/goals | Create goal |
+| GET | /api/goals | Get all goals |
+| GET | /api/goals/my | Get my goals |
+| GET | /api/goals/:id | Get single goal |
+| DELETE | /api/goals/:id | Delete goal |
+
+### Stock
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/stock/:id/buy | Buy shares |
+| GET | /api/stock/:id | Get stock data |
+| GET | /api/stock/transactions/my | Get my transactions |
+
+### Proof
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/proof/:id/submit | Submit proof |
+| GET | /api/proof/:id | Get proofs for goal |
+| POST | /api/proof/:id/:proofId/flag | Flag proof |
+| POST | /api/proof/:id/:proofId/approve | Approve proof |
