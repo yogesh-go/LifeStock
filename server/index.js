@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/stock', require('./routes/stockRoutes'));
+app.use('/api/proof', require('./routes/proofRoutes'));
 
 // Test route
 app.get('/', (req, res) => {
