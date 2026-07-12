@@ -48,6 +48,8 @@ app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/stock', require('./routes/stockRoutes'));
 app.use('/api/proof', require('./routes/proofRoutes'));
 app.use('/api/ranking', require('./routes/rankingRoutes'));
+app.use('/api/voice', require('./routes/voiceRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 // Test route
 app.get('/', (req, res) => {
