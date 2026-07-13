@@ -21,7 +21,7 @@ const Register = () => {
       const res = await register(formData);
       loginUser(res.data.token, res.data.user);
       toast.success('Account created successfully!');
-      navigate('/');
+      navigate('/feed');
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Registration failed');
     }
@@ -29,107 +29,67 @@ const Register = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.logo}>📈 LifeStock</h1>
-        <p style={styles.subtitle}>Create your account</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            style={styles.input}
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            style={styles.input}
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            style={styles.input}
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? 'Creating account...' : 'Register'}
+    <div className="min-h-screen bg-[#0a0a14] flex items-center justify-center px-5"
+      style={{ backgroundImage: 'radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.05) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(0,128,255,0.05) 0%, transparent 60%)' }}>
+      <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-2xl p-10 w-full max-w-md shadow-2xl">
+
+        {/* Logo */}
+        <h1 className="text-3xl font-extrabold text-[#00d4ff] text-center mb-1">📈 LifeStock</h1>
+        <p className="text-gray-500 text-center text-sm mb-8">Create your account</p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Yogesh Kumar"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.1)] transition-all placeholder-gray-600"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.1)] transition-all placeholder-gray-600"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.1)] transition-all placeholder-gray-600"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-[#00d4ff] text-[#0a0a14] font-bold rounded-lg text-base hover:brightness-110 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none mt-2"
+          >
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
-        <p style={styles.link}>
-          Already have an account? <Link to="/login">Login</Link>
+
+        <p className="text-gray-500 text-center text-sm mt-6">
+          Already have an account?{' '}
+          <Link to="/login" className="text-[#00d4ff] font-semibold hover:underline">Login</Link>
         </p>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0f0f1a',
-  },
-  card: {
-    backgroundColor: '#1a1a2e',
-    padding: '40px',
-    borderRadius: '12px',
-    width: '100%',
-    maxWidth: '400px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-  },
-  logo: {
-    color: '#00d4ff',
-    textAlign: 'center',
-    marginBottom: '8px',
-    fontSize: '32px',
-  },
-  subtitle: {
-    color: '#888',
-    textAlign: 'center',
-    marginBottom: '30px',
-    fontSize: '14px',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    marginBottom: '16px',
-    borderRadius: '8px',
-    border: '1px solid #333',
-    backgroundColor: '#0f0f1a',
-    color: '#fff',
-    fontSize: '14px',
-    boxSizing: 'border-box',
-  },
-  button: {
-    width: '100%',
-    padding: '12px',
-    backgroundColor: '#00d4ff',
-    color: '#0f0f1a',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '8px',
-  },
-  link: {
-    color: '#888',
-    textAlign: 'center',
-    marginTop: '20px',
-    fontSize: '14px',
-  }
 };
 
 export default Register;

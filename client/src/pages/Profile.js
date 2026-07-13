@@ -13,9 +13,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState('goals');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const fetchData = async () => {
     try {
@@ -25,80 +23,78 @@ const Profile = () => {
       ]);
       setGoals(goalsRes.data);
       setTransactions(transRes.data);
-
       try {
         const rankRes = await getMyRanking();
         setRanking(rankRes.data);
-      } catch {
-        setRanking(null);
-      }
+      } catch { setRanking(null); }
     } catch (err) {
-      toast.error('Failed to load profile data');
+      toast.error('Failed to load profile');
     }
     setLoading(false);
   };
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate('/login');
-  };
+  const handleLogout = () => { logoutUser(); navigate('/'); };
 
-  const getStatusColor = (status) => {
-    if (status === 'achieved') return '#00ff88';
-    if (status === 'failed') return '#ff4444';
-    if (status === 'under_review') return '#ffd700';
-    return '#00d4ff';
+  const getStatusStyle = (status) => {
+    if (status === 'achieved') return 'text-[#00ff88]';
+    if (status === 'failed') return 'text-[#ff4444]';
+    if (status === 'under_review') return 'text-[#ffd700]';
+    return 'text-[#00d4ff]';
   };
 
   const categories = ['fitness', 'education', 'finance', 'health', 'career', 'personal'];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.content}>
+    <div className="min-h-screen bg-[#0a0a14] text-white px-5 py-6">
+      <div className="max-w-2xl mx-auto">
+
         {/* Header */}
-        <div style={styles.header}>
-          <Link to="/" style={styles.back}>← Back</Link>
-          <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/feed" className="text-[#00d4ff] text-sm font-medium hover:opacity-80 transition-all">← Back</Link>
+          <button
+            onClick={handleLogout}
+            className="text-[#ff4444] border border-[#ff4444] px-4 py-1.5 rounded-lg text-sm hover:bg-[#ff444415] transition-all"
+          >
+            Logout
+          </button>
         </div>
 
         {/* Profile Card */}
-        <div style={styles.profileCard}>
-          <div style={styles.avatar}>
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-7 flex gap-6 items-center mb-5">
+          <div className="w-18 h-18 min-w-[72px] min-h-[72px] rounded-full bg-gradient-to-br from-[#00d4ff] to-[#0080ff] flex items-center justify-center text-3xl font-extrabold text-[#0a0a14]">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
-          <div style={styles.userInfo}>
-            <h2 style={styles.userName}>{user?.name}</h2>
-            <p style={styles.userEmail}>{user?.email}</p>
-            <div style={styles.statsRow}>
-              <div style={styles.stat}>
-                <p style={styles.statValue}>{user?.totalPoints}</p>
-                <p style={styles.statLabel}>Points</p>
-              </div>
-              <div style={styles.stat}>
-                <p style={styles.statValue}>{user?.credibilityScore}</p>
-                <p style={styles.statLabel}>Credibility</p>
-              </div>
-              <div style={styles.stat}>
-                <p style={styles.statValue}>{ranking?.globalRank || 'N/A'}</p>
-                <p style={styles.statLabel}>Global Rank</p>
-              </div>
-              <div style={styles.stat}>
-                <p style={styles.statValue}>{goals.length}</p>
-                <p style={styles.statLabel}>Goals</p>
-              </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-extrabold">{user?.name}</h2>
+            <p className="text-gray-500 text-sm mt-1">{user?.email}</p>
+            <div className="flex gap-8 mt-4">
+              {[
+                { value: user?.totalPoints, label: 'Points' },
+                { value: user?.credibilityScore, label: 'Credibility' },
+                { value: ranking?.globalRank || 'N/A', label: 'Global Rank' },
+                { value: goals.length, label: 'Goals' },
+              ].map(stat => (
+                <div key={stat.label}>
+                  <p className="text-xl font-extrabold text-[#00d4ff]">{stat.value}</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Category Scores */}
-        <div style={styles.card}>
-          <h3 style={styles.cardTitle}>📊 Category Scores</h3>
-          <div style={styles.categoryGrid}>
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-6 mb-5">
+          <h3 className="font-bold text-base mb-4">📊 Category Scores</h3>
+          <div className="grid grid-cols-3 gap-3">
             {categories.map(cat => (
-              <div key={cat} style={styles.categoryItem}>
-                <p style={styles.categoryName}>{cat}</p>
-                <p style={styles.categoryScore}>
-                  {user?.categoryScores?.[cat] || 0} pts
+              <div
+                key={cat}
+                className="bg-[#0a0a14] border border-[#2a2a3e] rounded-lg p-4 text-center hover:border-[#00d4ff44] transition-all"
+              >
+                <p className="text-xs text-gray-500 capitalize mb-1">{cat}</p>
+                <p className="text-lg font-extrabold text-[#00d4ff]">
+                  {user?.categoryScores?.[cat] || 0}
                 </p>
               </div>
             ))}
@@ -106,51 +102,55 @@ const Profile = () => {
         </div>
 
         {/* Tabs */}
-        <div style={styles.tabs}>
-          <button
-            onClick={() => setActiveTab('goals')}
-            style={{
-              ...styles.tab,
-              backgroundColor: activeTab === 'goals' ? '#00d4ff' : '#1a1a2e',
-              color: activeTab === 'goals' ? '#0f0f1a' : '#fff'
-            }}
-          >
-            My Goals ({goals.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('transactions')}
-            style={{
-              ...styles.tab,
-              backgroundColor: activeTab === 'transactions' ? '#00d4ff' : '#1a1a2e',
-              color: activeTab === 'transactions' ? '#0f0f1a' : '#fff'
-            }}
-          >
-            Transactions ({transactions.length})
-          </button>
+        <div className="flex gap-2 mb-4">
+          {[
+            { key: 'goals', label: `My Goals (${goals.length})` },
+            { key: 'transactions', label: `Transactions (${transactions.length})` }
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-5 py-2 rounded-lg text-sm font-medium border transition-all ${
+                activeTab === tab.key
+                  ? 'bg-[#00d4ff] text-[#0a0a14] border-[#00d4ff] font-bold'
+                  : 'border-[#2a2a3e] text-gray-400 hover:border-[#00d4ff] hover:text-[#00d4ff]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* Goals Tab */}
+        {/* Goals List */}
         {activeTab === 'goals' && (
-          <div style={styles.list}>
+          <div className="flex flex-col gap-3">
             {loading ? (
-              <p style={styles.empty}>Loading...</p>
+              <p className="text-center text-gray-500 py-10 animate-pulse">Loading...</p>
             ) : goals.length === 0 ? (
-              <p style={styles.empty}>No goals yet. <Link to="/create" style={{ color: '#00d4ff' }}>Create one!</Link></p>
+              <div className="text-center py-16">
+                <p className="text-4xl mb-3">🎯</p>
+                <p className="text-gray-500">No goals yet.</p>
+                <Link to="/create" className="inline-block mt-3 text-[#00d4ff] font-semibold hover:underline">
+                  Create your first goal →
+                </Link>
+              </div>
             ) : (
               goals.map(goal => (
-                <Link to={`/goal/${goal._id}`} key={goal._id} style={styles.itemLink}>
-                  <div style={styles.item}>
+                <Link to={`/goal/${goal._id}`} key={goal._id}>
+                  <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl px-5 py-4 flex justify-between items-center hover:border-[#00d4ff44] transition-all">
                     <div>
-                      <p style={styles.itemTitle}>{goal.title}</p>
-                      <p style={styles.itemMeta}>
+                      <p className="font-semibold text-sm">{goal.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">
                         {goal.category} | ⏰ {new Date(goal.deadline).toLocaleDateString()}
                       </p>
                     </div>
-                    <div style={styles.itemRight}>
-                      <p style={{ ...styles.status, color: getStatusColor(goal.status) }}>
+                    <div className="text-right">
+                      <p className={`text-xs font-bold ${getStatusStyle(goal.status)}`}>
                         {goal.status}
                       </p>
-                      <p style={styles.itemPrice}>{goal.stockPrice}%</p>
+                      <p className="text-base font-extrabold text-[#00d4ff] mt-1">
+                        {goal.stockPrice}%
+                      </p>
                     </div>
                   </div>
                 </Link>
@@ -159,28 +159,28 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Transactions Tab */}
+        {/* Transactions List */}
         {activeTab === 'transactions' && (
-          <div style={styles.list}>
+          <div className="flex flex-col gap-3">
             {loading ? (
-              <p style={styles.empty}>Loading...</p>
+              <p className="text-center text-gray-500 py-10 animate-pulse">Loading...</p>
             ) : transactions.length === 0 ? (
-              <p style={styles.empty}>No transactions yet.</p>
+              <div className="text-center py-16">
+                <p className="text-4xl mb-3">💹</p>
+                <p className="text-gray-500">No transactions yet.</p>
+              </div>
             ) : (
               transactions.map(tx => (
-                <div key={tx._id} style={styles.item}>
+                <div key={tx._id} className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl px-5 py-4 flex justify-between items-center hover:border-[#00d4ff44] transition-all">
                   <div>
-                    <p style={styles.itemTitle}>{tx.goal?.title}</p>
-                    <p style={styles.itemMeta}>
-                      {tx.type.toUpperCase()} {tx.shares} {tx.position.toUpperCase()} shares
-                      @ {tx.priceAtTransaction}%
+                    <p className="font-semibold text-sm">{tx.goal?.title}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {tx.type.toUpperCase()} {tx.shares} {tx.position.toUpperCase()} shares @ {tx.priceAtTransaction}%
                     </p>
                   </div>
-                  <div style={styles.itemRight}>
-                    <p style={{ color: '#ff4444', fontWeight: 'bold' }}>
-                      -{tx.pointsSpent} pts
-                    </p>
-                    <p style={styles.itemMeta}>
+                  <div className="text-right">
+                    <p className="text-sm font-extrabold text-[#ff4444]">-{tx.pointsSpent} pts</p>
+                    <p className="text-xs text-gray-500 mt-1">
                       {new Date(tx.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -192,67 +192,6 @@ const Profile = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#0f0f1a', color: '#fff', padding: '20px' },
-  content: { maxWidth: '700px', margin: '0 auto' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
-  back: { color: '#00d4ff', textDecoration: 'none' },
-  logoutBtn: {
-    backgroundColor: 'transparent', color: '#ff4444',
-    border: '1px solid #ff4444', padding: '6px 12px',
-    borderRadius: '6px', cursor: 'pointer'
-  },
-  profileCard: {
-    backgroundColor: '#1a1a2e', borderRadius: '12px',
-    padding: '24px', border: '1px solid #333',
-    display: 'flex', gap: '20px', alignItems: 'center',
-    marginBottom: '20px'
-  },
-  avatar: {
-    width: '64px', height: '64px', borderRadius: '50%',
-    backgroundColor: '#00d4ff', color: '#0f0f1a',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '28px', fontWeight: 'bold', flexShrink: 0
-  },
-  userInfo: { flex: 1 },
-  userName: { color: '#fff', margin: '0 0 4px 0' },
-  userEmail: { color: '#666', margin: '0 0 16px 0', fontSize: '14px' },
-  statsRow: { display: 'flex', gap: '24px' },
-  stat: { textAlign: 'center' },
-  statValue: { color: '#00d4ff', fontWeight: 'bold', fontSize: '20px', margin: 0 },
-  statLabel: { color: '#666', fontSize: '12px', margin: 0 },
-  card: {
-    backgroundColor: '#1a1a2e', borderRadius: '12px',
-    padding: '20px', border: '1px solid #333', marginBottom: '20px'
-  },
-  cardTitle: { color: '#fff', marginTop: 0, marginBottom: '16px' },
-  categoryGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' },
-  categoryItem: {
-    backgroundColor: '#0f0f1a', borderRadius: '8px',
-    padding: '12px', textAlign: 'center'
-  },
-  categoryName: { color: '#aaa', margin: '0 0 4px 0', fontSize: '12px', textTransform: 'capitalize' },
-  categoryScore: { color: '#00d4ff', fontWeight: 'bold', margin: 0 },
-  tabs: { display: 'flex', gap: '8px', marginBottom: '16px' },
-  tab: {
-    padding: '8px 20px', borderRadius: '8px',
-    border: '1px solid #333', cursor: 'pointer', fontSize: '14px'
-  },
-  list: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  empty: { color: '#666', textAlign: 'center', padding: '40px' },
-  itemLink: { textDecoration: 'none' },
-  item: {
-    backgroundColor: '#1a1a2e', borderRadius: '10px',
-    padding: '16px', border: '1px solid #333',
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-  },
-  itemTitle: { color: '#fff', margin: '0 0 4px 0', fontSize: '14px' },
-  itemMeta: { color: '#666', margin: 0, fontSize: '12px' },
-  itemRight: { textAlign: 'right' },
-  status: { margin: '0 0 4px 0', fontSize: '12px', fontWeight: 'bold' },
-  itemPrice: { color: '#00d4ff', fontWeight: 'bold', margin: 0 }
 };
 
 export default Profile;

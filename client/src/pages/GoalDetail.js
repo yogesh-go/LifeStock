@@ -17,9 +17,7 @@ const GoalDetail = () => {
   const [buying, setBuying] = useState(false);
   const [submittingProof, setSubmittingProof] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
+  useEffect(() => { fetchData(); }, [id]);
 
   const fetchData = async () => {
     try {
@@ -62,13 +60,22 @@ const GoalDetail = () => {
   };
 
   const getPriceColor = (price) => {
-    if (price >= 70) return '#00ff88';
-    if (price >= 40) return '#ffd700';
-    return '#ff4444';
+    if (price >= 70) return 'text-[#00ff88]';
+    if (price >= 40) return 'text-[#ffd700]';
+    return 'text-[#ff4444]';
   };
 
-  if (loading) return <div style={styles.loading}>Loading...</div>;
-  if (!goal) return <div style={styles.loading}>Goal not found</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-[#0a0a14] flex items-center justify-center text-[#00d4ff] text-lg font-semibold animate-pulse">
+      Loading...
+    </div>
+  );
+
+  if (!goal) return (
+    <div className="min-h-screen bg-[#0a0a14] flex items-center justify-center text-gray-500">
+      Goal not found
+    </div>
+  );
 
   const chartData = stockData?.priceHistory?.map((p, i) => ({
     index: i + 1,
@@ -79,112 +86,120 @@ const GoalDetail = () => {
   const cost = shares * (stockData?.stockPrice || 50);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.content}>
-        {/* Back button */}
-        <Link to="/" style={styles.back}>← Back to Feed</Link>
+    <div className="min-h-screen bg-[#0a0a14] text-white px-5 py-6">
+      <div className="max-w-3xl mx-auto">
+
+        {/* Back */}
+        <Link to="/feed" className="text-[#00d4ff] text-sm font-medium flex items-center gap-1 mb-5 hover:opacity-80 transition-all">
+          ← Back to Feed
+        </Link>
 
         {/* Goal Header */}
-        <div style={styles.goalHeader}>
-          <div>
-            <span style={styles.category}>{goal.category}</span>
-            <h2 style={styles.title}>{goal.title}</h2>
-            <p style={styles.description}>{goal.description}</p>
-            <p style={styles.meta}>
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-7 flex justify-between items-start gap-6 mb-5">
+          <div className="flex-1">
+            <span className="bg-[#00d4ff15] text-[#00d4ff] px-3 py-1 rounded-full text-xs font-bold uppercase">
+              {goal.category}
+            </span>
+            <h2 className="text-2xl font-extrabold mt-3 mb-2">{goal.title}</h2>
+            <p className="text-gray-400 text-sm">{goal.description}</p>
+            <p className="text-gray-600 text-xs mt-3">
               👤 {goal.creator?.name} &nbsp;|&nbsp;
-              ⏰ Deadline: {new Date(goal.deadline).toLocaleDateString()} &nbsp;|&nbsp;
-              📊 Status: {goal.status}
+              ⏰ {new Date(goal.deadline).toLocaleDateString()} &nbsp;|&nbsp;
+              📊 {goal.status}
             </p>
           </div>
-          <div style={styles.priceBox}>
-            <p style={styles.priceLabel}>Market Confidence</p>
-            <p style={{ ...styles.bigPrice, color: getPriceColor(stockData?.stockPrice) }}>
+          <div className="text-center min-w-[130px]">
+            <p className="text-xs text-gray-500 uppercase tracking-wider">Market Confidence</p>
+            <p className={`text-5xl font-extrabold my-2 ${getPriceColor(stockData?.stockPrice)}`}>
               {stockData?.stockPrice}%
             </p>
-            <p style={styles.priceLabel}>
+            <p className="text-xs text-gray-600">
               🔼 {stockData?.buyerCount} YES &nbsp; 🔽 {stockData?.sellerCount} NO
             </p>
           </div>
         </div>
 
         {/* Price Chart */}
-        <div style={styles.card}>
-          <h3 style={styles.cardTitle}>📈 Price History</h3>
+        <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-6 mb-5">
+          <h3 className="font-bold text-base mb-4">📈 Price History</h3>
           {chartData.length > 1 ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis dataKey="index" stroke="#666" />
-                <YAxis domain={[0, 100]} stroke="#666" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
+                <XAxis dataKey="index" stroke="#555" tick={{ fontSize: 11 }} />
+                <YAxis domain={[0, 100]} stroke="#555" tick={{ fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #333' }}
+                  contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a3e', borderRadius: '8px' }}
                   labelStyle={{ color: '#fff' }}
+                  itemStyle={{ color: '#00d4ff' }}
                 />
                 <Line
                   type="monotone"
                   dataKey="price"
                   stroke="#00d4ff"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
+                  activeDot={{ r: 5, fill: '#00d4ff' }}
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <p style={styles.noData}>Not enough data for chart yet. Make some trades!</p>
+            <div className="text-center py-10 text-gray-600">
+              <p className="text-3xl mb-2">📊</p>
+              <p>Not enough data yet. Make some trades!</p>
+            </div>
           )}
         </div>
 
-        {/* Buy/Sell Panel */}
+        {/* Trade Panel */}
         {goal.status === 'active' && (
-          <div style={styles.card}>
-            <h3 style={styles.cardTitle}>💹 Trade Shares</h3>
-            <div style={styles.tradeRow}>
+          <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-6 mb-5">
+            <h3 className="font-bold text-base mb-5">💹 Trade Shares</h3>
+            <div className="flex gap-6 items-end mb-5 flex-wrap">
               <div>
-                <label style={styles.label}>Your Position</label>
-                <div style={styles.positionBtns}>
+                <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Your Position</p>
+                <div className="flex gap-2">
                   <button
                     onClick={() => setPosition('yes')}
-                    style={{
-                      ...styles.posBtn,
-                      backgroundColor: position === 'yes' ? '#00ff88' : 'transparent',
-                      color: position === 'yes' ? '#0f0f1a' : '#00ff88',
-                      borderColor: '#00ff88'
-                    }}
+                    className={`px-5 py-2.5 rounded-lg border font-bold text-sm transition-all ${
+                      position === 'yes'
+                        ? 'bg-[#00ff88] text-[#0a0a14] border-[#00ff88]'
+                        : 'border-[#00ff88] text-[#00ff88] hover:bg-[#00ff8815]'
+                    }`}
                   >
                     ✅ YES
                   </button>
                   <button
                     onClick={() => setPosition('no')}
-                    style={{
-                      ...styles.posBtn,
-                      backgroundColor: position === 'no' ? '#ff4444' : 'transparent',
-                      color: position === 'no' ? '#fff' : '#ff4444',
-                      borderColor: '#ff4444'
-                    }}
+                    className={`px-5 py-2.5 rounded-lg border font-bold text-sm transition-all ${
+                      position === 'no'
+                        ? 'bg-[#ff4444] text-white border-[#ff4444]'
+                        : 'border-[#ff4444] text-[#ff4444] hover:bg-[#ff444415]'
+                    }`}
                   >
                     ❌ NO
                   </button>
                 </div>
               </div>
               <div>
-                <label style={styles.label}>Shares</label>
+                <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Shares</p>
                 <input
-                  style={styles.sharesInput}
                   type="number"
                   min="1"
                   value={shares}
                   onChange={(e) => setShares(e.target.value)}
+                  className="w-20 px-3 py-2.5 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-center font-bold outline-none focus:border-[#00d4ff] transition-all"
                 />
               </div>
               <div>
-                <label style={styles.label}>Cost</label>
-                <p style={styles.cost}>{cost} pts</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Cost</p>
+                <p className="text-xl font-extrabold text-[#ffd700]">{cost} pts</p>
               </div>
             </div>
             <button
               onClick={handleBuy}
-              style={styles.buyBtn}
               disabled={buying}
+              className="w-full py-3 bg-[#00d4ff] text-[#0a0a14] font-bold rounded-lg hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {buying ? 'Processing...' : `Buy ${shares} ${position.toUpperCase()} shares`}
             </button>
@@ -193,18 +208,18 @@ const GoalDetail = () => {
 
         {/* Proof Submission */}
         {isCreator && goal.status === 'active' && (
-          <div style={styles.card}>
-            <h3 style={styles.cardTitle}>📋 Submit Proof</h3>
+          <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-6 mb-5">
+            <h3 className="font-bold text-base mb-4">📋 Submit Proof</h3>
             <textarea
-              style={styles.proofInput}
-              placeholder="Describe your proof of achievement..."
+              placeholder="Describe your proof of achievement in detail..."
               value={proofDesc}
               onChange={(e) => setProofDesc(e.target.value)}
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] transition-all placeholder-gray-600 resize-vertical h-24 mb-3"
             />
             <button
               onClick={handleProofSubmit}
-              style={styles.proofBtn}
               disabled={submittingProof}
+              className="px-6 py-2.5 bg-[#ffd700] text-[#0a0a14] font-bold rounded-lg hover:brightness-110 transition-all disabled:opacity-60"
             >
               {submittingProof ? 'Submitting...' : '📤 Submit Proof'}
             </button>
@@ -213,64 +228,6 @@ const GoalDetail = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#0f0f1a', color: '#fff', padding: '20px' },
-  content: { maxWidth: '800px', margin: '0 auto' },
-  loading: { color: '#fff', textAlign: 'center', padding: '40px' },
-  back: { color: '#00d4ff', textDecoration: 'none', fontSize: '14px' },
-  goalHeader: {
-    display: 'flex', justifyContent: 'space-between',
-    alignItems: 'flex-start', margin: '20px 0',
-    backgroundColor: '#1a1a2e', padding: '24px',
-    borderRadius: '12px', border: '1px solid #333', gap: '20px'
-  },
-  category: {
-    backgroundColor: '#0f0f1a', color: '#00d4ff',
-    padding: '4px 10px', borderRadius: '12px', fontSize: '12px'
-  },
-  title: { color: '#fff', margin: '10px 0' },
-  description: { color: '#888', fontSize: '14px' },
-  meta: { color: '#666', fontSize: '12px' },
-  priceBox: { textAlign: 'center', minWidth: '120px' },
-  priceLabel: { color: '#666', fontSize: '12px', margin: '4px 0' },
-  bigPrice: { fontSize: '48px', fontWeight: 'bold', margin: '8px 0' },
-  card: {
-    backgroundColor: '#1a1a2e', borderRadius: '12px',
-    padding: '24px', marginBottom: '20px', border: '1px solid #333'
-  },
-  cardTitle: { color: '#fff', marginTop: 0, marginBottom: '16px' },
-  noData: { color: '#666', textAlign: 'center', padding: '20px' },
-  tradeRow: { display: 'flex', gap: '24px', alignItems: 'flex-end', marginBottom: '16px' },
-  label: { display: 'block', color: '#aaa', fontSize: '13px', marginBottom: '8px' },
-  positionBtns: { display: 'flex', gap: '8px' },
-  posBtn: {
-    padding: '8px 16px', borderRadius: '8px',
-    border: '1px solid', cursor: 'pointer', fontWeight: 'bold'
-  },
-  sharesInput: {
-    width: '80px', padding: '8px', borderRadius: '8px',
-    border: '1px solid #333', backgroundColor: '#0f0f1a',
-    color: '#fff', fontSize: '16px'
-  },
-  cost: { color: '#ffd700', fontWeight: 'bold', fontSize: '18px', margin: 0 },
-  buyBtn: {
-    width: '100%', padding: '12px', backgroundColor: '#00d4ff',
-    color: '#0f0f1a', border: 'none', borderRadius: '8px',
-    fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'
-  },
-  proofInput: {
-    width: '100%', padding: '12px', borderRadius: '8px',
-    border: '1px solid #333', backgroundColor: '#0f0f1a',
-    color: '#fff', fontSize: '14px', height: '100px',
-    resize: 'vertical', boxSizing: 'border-box', marginBottom: '12px'
-  },
-  proofBtn: {
-    padding: '10px 20px', backgroundColor: '#ffd700',
-    color: '#0f0f1a', border: 'none', borderRadius: '8px',
-    fontWeight: 'bold', cursor: 'pointer'
-  }
 };
 
 export default GoalDetail;

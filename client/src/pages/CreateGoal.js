@@ -11,6 +11,7 @@ const CreateGoal = () => {
     deadline: ''
   });
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState(null);
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ const CreateGoal = () => {
 
   const handleAICategorize = async () => {
     if (!formData.title) return toast.error('Enter a title first');
+    setAiLoading(true);
     try {
       const res = await categorizeGoal({ title: formData.title, description: formData.description });
       const result = res.data.result;
@@ -29,6 +31,7 @@ const CreateGoal = () => {
     } catch (err) {
       toast.error('AI categorization failed');
     }
+    setAiLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -37,7 +40,7 @@ const CreateGoal = () => {
     try {
       await createGoal(formData);
       toast.success('Goal created successfully!');
-      navigate('/');
+      navigate('/feed');
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Failed to create goal');
     }
@@ -47,80 +50,108 @@ const CreateGoal = () => {
   const categories = ['fitness', 'education', 'finance', 'health', 'career', 'personal'];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.header}>
-          <Link to="/" style={styles.back}>← Back</Link>
-          <h2 style={styles.title}>Create New Goal</h2>
+    <div className="min-h-screen bg-[#0a0a14] text-white flex justify-center px-5 py-10"
+      style={{ backgroundImage: 'radial-gradient(ellipse at 30% 30%, rgba(0,212,255,0.04) 0%, transparent 60%)' }}>
+      <div className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-2xl p-9 w-full max-w-lg h-fit">
+
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-7">
+          <Link to="/feed" className="text-[#00d4ff] text-sm font-medium hover:opacity-80 transition-all">← Back</Link>
+          <h2 className="text-xl font-extrabold">Create New Goal</h2>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <label style={styles.label}>Goal Title</label>
-          <input
-            style={styles.input}
-            type="text"
-            name="title"
-            placeholder="e.g. Run 5km every day for 30 days"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-          <label style={styles.label}>Description</label>
-          <textarea
-            style={{ ...styles.input, height: '100px', resize: 'vertical' }}
-            name="description"
-            placeholder="Describe your goal in detail..."
-            value={formData.description}
-            onChange={handleChange}
-          />
+          {/* Title */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              Goal Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              placeholder="e.g. Run 5km every day for 30 days"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.1)] transition-all placeholder-gray-600"
+            />
+          </div>
 
+          {/* Description */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              placeholder="Describe your goal in detail..."
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.1)] transition-all placeholder-gray-600 h-24 resize-vertical"
+            />
+          </div>
+
+          {/* AI Categorize Button */}
           <button
             type="button"
             onClick={handleAICategorize}
-            style={styles.aiBtn}
+            disabled={aiLoading}
+            className="w-full py-3 bg-transparent text-[#00d4ff] border border-[#00d4ff] rounded-lg font-semibold text-sm hover:bg-[#00d4ff15] hover:shadow-[0_0_20px_rgba(0,212,255,0.15)] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            🤖 Auto Categorize with AI
+            {aiLoading ? '🤖 Categorizing...' : '🤖 Auto Categorize with AI'}
           </button>
 
+          {/* AI Result */}
           {aiSuggestion && (
-            <div style={styles.aiResult}>
-              <p>✅ Category: <strong>{aiSuggestion.category}</strong></p>
-              <p>📊 Confidence: <strong>{aiSuggestion.confidence}</strong></p>
+            <div className="bg-[#0a0a14] border border-[#00d4ff44] rounded-lg p-4 text-sm text-gray-400">
+              <p>✅ Category: <span className="text-white font-bold">{aiSuggestion.category}</span></p>
+              <p className="mt-1">📊 Confidence: <span className="text-white font-bold">{aiSuggestion.confidence}</span></p>
               {aiSuggestion.suggestion && (
-                <p>💡 Suggestion: {aiSuggestion.suggestion}</p>
+                <p className="mt-1">💡 Suggestion: <span className="text-gray-300">{aiSuggestion.suggestion}</span></p>
               )}
             </div>
           )}
 
-          <label style={styles.label}>Category</label>
-          <select
-            style={styles.input}
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-          >
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
+          {/* Category */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              Category
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] transition-all cursor-pointer"
+            >
+              {categories.map(cat => (
+                <option key={cat} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <label style={styles.label}>Deadline</label>
-          <input
-            style={styles.input}
-            type="date"
-            name="deadline"
-            value={formData.deadline}
-            onChange={handleChange}
-            required
-          />
+          {/* Deadline */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              Deadline
+            </label>
+            <input
+              type="date"
+              name="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 bg-[#0a0a14] border border-[#2a2a3e] rounded-lg text-white text-sm outline-none focus:border-[#00d4ff] transition-all"
+            />
+          </div>
 
+          {/* Submit */}
           <button
             type="submit"
-            style={styles.submitBtn}
             disabled={loading}
+            className="w-full py-3.5 bg-[#00d4ff] text-[#0a0a14] font-bold rounded-lg text-base hover:brightness-110 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-[#00d4ff22]"
           >
             {loading ? 'Creating...' : '🚀 Create Goal'}
           </button>
@@ -128,46 +159,6 @@ const CreateGoal = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    minHeight: '100vh', backgroundColor: '#0f0f1a',
-    display: 'flex', justifyContent: 'center',
-    padding: '40px 20px'
-  },
-  card: {
-    backgroundColor: '#1a1a2e', borderRadius: '12px',
-    padding: '32px', width: '100%', maxWidth: '500px',
-    height: 'fit-content', border: '1px solid #333'
-  },
-  header: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' },
-  back: { color: '#00d4ff', textDecoration: 'none' },
-  title: { color: '#fff', margin: 0 },
-  label: { display: 'block', color: '#aaa', fontSize: '13px', marginBottom: '6px' },
-  input: {
-    width: '100%', padding: '12px', marginBottom: '16px',
-    borderRadius: '8px', border: '1px solid #333',
-    backgroundColor: '#0f0f1a', color: '#fff',
-    fontSize: '14px', boxSizing: 'border-box'
-  },
-  aiBtn: {
-    width: '100%', padding: '10px', marginBottom: '16px',
-    backgroundColor: 'transparent', color: '#00d4ff',
-    border: '1px solid #00d4ff', borderRadius: '8px',
-    cursor: 'pointer', fontSize: '14px'
-  },
-  aiResult: {
-    backgroundColor: '#0f0f1a', borderRadius: '8px',
-    padding: '12px', marginBottom: '16px',
-    border: '1px solid #00d4ff', color: '#aaa', fontSize: '13px'
-  },
-  submitBtn: {
-    width: '100%', padding: '12px',
-    backgroundColor: '#00d4ff', color: '#0f0f1a',
-    border: 'none', borderRadius: '8px',
-    fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'
-  }
 };
 
 export default CreateGoal;

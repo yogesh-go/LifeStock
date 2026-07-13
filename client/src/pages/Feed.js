@@ -11,9 +11,7 @@ const Feed = () => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchGoals();
-  }, [category]);
+  useEffect(() => { fetchGoals(); }, [category]);
 
   const fetchGoals = async () => {
     try {
@@ -25,82 +23,103 @@ const Feed = () => {
     setLoading(false);
   };
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate('/login');
-  };
+  const handleLogout = () => { logoutUser(); navigate('/'); };
 
   const getPriceColor = (price) => {
-    if (price >= 70) return '#00ff88';
-    if (price >= 40) return '#ffd700';
-    return '#ff4444';
+    if (price >= 70) return 'text-[#00ff88]';
+    if (price >= 40) return 'text-[#ffd700]';
+    return 'text-[#ff4444]';
   };
 
   const categories = ['', 'fitness', 'education', 'finance', 'health', 'career', 'personal'];
 
   return (
-    <div style={styles.container}>
+    <div className="min-h-screen bg-[#0a0a14] text-white">
+
       {/* Navbar */}
-      <nav style={styles.navbar}>
-        <h1 style={styles.logo}>📈 LifeStock</h1>
-        <div style={styles.navLinks}>
-          <span style={styles.points}>💰 {user?.totalPoints} pts</span>
-          <Link to="/create" style={styles.navBtn}>+ Create Goal</Link>
-          <Link to="/leaderboard" style={styles.navLink}>Leaderboard</Link>
-          <Link to="/profile" style={styles.navLink}>Profile</Link>
-          <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
+      <nav className="flex items-center justify-between px-10 py-4 bg-[#0a0a14]/90 backdrop-blur-md border-b border-[#2a2a3e] sticky top-0 z-50">
+        <h1 className="text-xl font-extrabold text-[#00d4ff]">📈 LifeStock</h1>
+        <div className="flex items-center gap-3">
+          <span className="text-[#ffd700] font-bold text-sm px-3 py-1.5 bg-[#ffd70015] border border-[#ffd700] rounded-full">
+            💰 {user?.totalPoints} pts
+          </span>
+          <Link to="/create" className="bg-[#00d4ff] text-[#0a0a14] px-4 py-2 rounded-lg font-bold text-sm hover:brightness-110 transition-all">
+            + Create Goal
+          </Link>
+          <Link to="/leaderboard" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">
+            Leaderboard
+          </Link>
+          <Link to="/profile" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">
+            Profile
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-[#ff4444] border border-[#ff4444] px-3 py-2 rounded-lg text-sm hover:bg-[#ff444415] transition-all"
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
       {/* Category Filter */}
-      <div style={styles.filterContainer}>
+      <div className="flex gap-2 px-10 py-4 border-b border-[#2a2a3e] flex-wrap">
         {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setCategory(cat)}
-            style={{
-              ...styles.filterBtn,
-              backgroundColor: category === cat ? '#00d4ff' : '#1a1a2e',
-              color: category === cat ? '#0f0f1a' : '#fff',
-            }}
+            className={`px-5 py-1.5 rounded-full text-sm font-medium border transition-all ${
+              category === cat
+                ? 'bg-[#00d4ff] text-[#0a0a14] border-[#00d4ff] font-bold'
+                : 'border-[#2a2a3e] text-gray-400 hover:border-[#00d4ff] hover:text-[#00d4ff]'
+            }`}
           >
             {cat === '' ? 'All' : cat.charAt(0).toUpperCase() + cat.slice(1)}
           </button>
         ))}
       </div>
 
-      {/* Goals Feed */}
-      <div style={styles.feed}>
+      {/* Goals Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-10 py-6">
         {loading ? (
-          <p style={styles.loading}>Loading goals...</p>
+          <p className="text-gray-500 col-span-3 text-center py-16">Loading goals...</p>
         ) : goals.length === 0 ? (
-          <p style={styles.loading}>No goals found. Be the first to create one!</p>
+          <div className="col-span-3 text-center py-16">
+            <p className="text-4xl mb-4">🎯</p>
+            <p className="text-gray-500">No goals found. Be the first to create one!</p>
+            <Link to="/create" className="inline-block mt-4 bg-[#00d4ff] text-[#0a0a14] px-6 py-2 rounded-lg font-bold text-sm">
+              Create Goal
+            </Link>
+          </div>
         ) : (
           goals.map(goal => (
-            <div key={goal._id} style={styles.goalCard}>
-              <div style={styles.cardHeader}>
-                <span style={styles.category}>{goal.category}</span>
-                <span style={{
-                  ...styles.price,
-                  color: getPriceColor(goal.stockPrice)
-                }}>
+            <div key={goal._id} className="bg-[#1a1a2e] border border-[#2a2a3e] rounded-xl p-5 flex flex-col gap-3 hover:border-[#00d4ff44] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#00d4ff11] transition-all">
+
+              {/* Card Header */}
+              <div className="flex items-center justify-between">
+                <span className="bg-[#00d4ff15] text-[#00d4ff] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                  {goal.category}
+                </span>
+                <span className={`text-2xl font-extrabold ${getPriceColor(goal.stockPrice)}`}>
                   {goal.stockPrice}%
                 </span>
               </div>
-              <h3 style={styles.goalTitle}>{goal.title}</h3>
-              <p style={styles.goalDesc}>{goal.description}</p>
-              <div style={styles.cardFooter}>
-                <span style={styles.creator}>
-                  👤 {goal.creator?.name}
-                </span>
-                <span style={styles.stats}>
-                  🔼 {goal.buyerCount} | 🔽 {goal.sellerCount}
-                </span>
-                <span style={styles.deadline}>
-                  ⏰ {new Date(goal.deadline).toLocaleDateString()}
-                </span>
+
+              {/* Title & Description */}
+              <h3 className="font-bold text-base text-white leading-snug">{goal.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{goal.description}</p>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between text-xs text-gray-600 mt-1">
+                <span>👤 {goal.creator?.name}</span>
+                <span>🔼 {goal.buyerCount} | 🔽 {goal.sellerCount}</span>
+                <span>⏰ {new Date(goal.deadline).toLocaleDateString()}</span>
               </div>
-              <Link to={`/goal/${goal._id}`} style={styles.viewBtn}>
+
+              {/* CTA */}
+              <Link
+                to={`/goal/${goal._id}`}
+                className="block text-center bg-[#00d4ff] text-[#0a0a14] py-2.5 rounded-lg font-bold text-sm hover:brightness-110 transition-all"
+              >
                 View & Trade →
               </Link>
             </div>
@@ -109,61 +128,6 @@ const Feed = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#0f0f1a', color: '#fff' },
-  navbar: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    padding: '16px 32px', backgroundColor: '#1a1a2e',
-    borderBottom: '1px solid #333'
-  },
-  logo: { color: '#00d4ff', margin: 0 },
-  navLinks: { display: 'flex', alignItems: 'center', gap: '16px' },
-  points: { color: '#ffd700', fontWeight: 'bold' },
-  navBtn: {
-    backgroundColor: '#00d4ff', color: '#0f0f1a', padding: '8px 16px',
-    borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold'
-  },
-  navLink: { color: '#fff', textDecoration: 'none' },
-  logoutBtn: {
-    backgroundColor: 'transparent', color: '#ff4444',
-    border: '1px solid #ff4444', padding: '6px 12px',
-    borderRadius: '6px', cursor: 'pointer'
-  },
-  filterContainer: {
-    display: 'flex', gap: '8px', padding: '20px 32px',
-    flexWrap: 'wrap'
-  },
-  filterBtn: {
-    padding: '6px 16px', borderRadius: '20px',
-    border: '1px solid #333', cursor: 'pointer', fontSize: '13px'
-  },
-  feed: { padding: '0 32px 32px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' },
-  loading: { color: '#888', textAlign: 'center', padding: '40px' },
-  goalCard: {
-    backgroundColor: '#1a1a2e', borderRadius: '12px',
-    padding: '20px', border: '1px solid #333',
-    display: 'flex', flexDirection: 'column', gap: '10px'
-  },
-  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  category: {
-    backgroundColor: '#0f0f1a', color: '#00d4ff',
-    padding: '4px 10px', borderRadius: '12px', fontSize: '12px'
-  },
-  price: { fontSize: '24px', fontWeight: 'bold' },
-  goalTitle: { margin: 0, fontSize: '16px', color: '#fff' },
-  goalDesc: { margin: 0, fontSize: '13px', color: '#888', lineHeight: '1.5' },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' },
-  creator: { color: '#aaa' },
-  stats: { color: '#aaa' },
-  deadline: { color: '#aaa' },
-  viewBtn: {
-    backgroundColor: '#00d4ff', color: '#0f0f1a',
-    padding: '8px 16px', borderRadius: '8px',
-    textDecoration: 'none', fontWeight: 'bold',
-    textAlign: 'center', fontSize: '14px'
-  }
 };
 
 export default Feed;
