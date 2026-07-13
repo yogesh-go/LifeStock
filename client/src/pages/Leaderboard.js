@@ -10,20 +10,25 @@ const Leaderboard = () => {
 
   const categories = ['global', 'fitness', 'education', 'finance', 'health', 'career', 'personal'];
 
-  useEffect(() => { fetchRankings(); }, [category]);
+  useEffect(() => {
+    const fetchRankings = async () => {
+      setLoading(true);
+      try {
+        const res =
+          category === "global"
+            ? await getGlobalLeaderboard()
+            : await getCategoryLeaderboard(category);
 
-  const fetchRankings = async () => {
-    setLoading(true);
-    try {
-      const res = category === 'global'
-        ? await getGlobalLeaderboard()
-        : await getCategoryLeaderboard(category);
-      setRankings(res.data);
-    } catch (err) {
-      toast.error('Failed to load rankings');
-    }
-    setLoading(false);
-  };
+        setRankings(res.data);
+      } catch (err) {
+        toast.error("Failed to load rankings");
+      }
+
+      setLoading(false);
+    };
+
+    fetchRankings();
+  }, [category]);
 
   const getMedal = (index) => {
     if (index === 0) return '🥇';

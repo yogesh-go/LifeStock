@@ -11,17 +11,22 @@ const Feed = () => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => { fetchGoals(); }, [category]);
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const res = await getGoals({ category, status: 'active' });
+        setGoals(res.data);
+      } catch (err) {
+        toast.error('Failed to load goals');
+      }
+      setLoading(false);
+    };
 
-  const fetchGoals = async () => {
-    try {
-      const res = await getGoals({ category, status: 'active' });
-      setGoals(res.data);
-    } catch (err) {
-      toast.error('Failed to load goals');
-    }
-    setLoading(false);
-  };
+    fetchGoals();
+  }, [category]);
+
+
+
 
   const handleLogout = () => { logoutUser(); navigate('/'); };
 

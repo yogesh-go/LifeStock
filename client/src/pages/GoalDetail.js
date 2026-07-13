@@ -17,28 +17,32 @@ const GoalDetail = () => {
   const [buying, setBuying] = useState(false);
   const [submittingProof, setSubmittingProof] = useState(false);
 
-  useEffect(() => { fetchData(); }, [id]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [goalRes, stockRes] = await Promise.all([
+          getGoalById(id),
+          getStockData(id)
+        ]);
 
-  const fetchData = async () => {
-    try {
-      const [goalRes, stockRes] = await Promise.all([
-        getGoalById(id),
-        getStockData(id)
-      ]);
-      setGoal(goalRes.data);
-      setStockData(stockRes.data);
-    } catch (err) {
-      toast.error('Failed to load goal');
-    }
-    setLoading(false);
-  };
+        setGoal(goalRes.data);
+        setStockData(stockRes.data);
+      } catch (err) {
+        toast.error("Failed to load goal");
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
 
   const handleBuy = async () => {
     setBuying(true);
     try {
       const res = await buyShares(id, { position, shares: parseInt(shares) });
       toast.success(`Bought ${shares} shares! New price: ${res.data.newPrice}%`);
-      fetchData();
+      window.location.reload();
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Failed to buy shares');
     }
@@ -52,7 +56,7 @@ const GoalDetail = () => {
       await submitProof(id, { description: proofDesc });
       toast.success('Proof submitted successfully!');
       setProofDesc('');
-      fetchData();
+      window.location.reload();
     } catch (err) {
       toast.error(err.response?.data?.msg || 'Failed to submit proof');
     }
