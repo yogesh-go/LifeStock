@@ -1,68 +1,48 @@
-# LifeStock 📈
+# 📈 LifeStock
 > A prediction market platform for personal life goals
 
-## What is LifeStock?
-Users set life goals and others buy/sell stocks predicting whether those goals will be achieved. Stock prices move based on community confidence.
+## 🌐 Live Demo
+**[life-stock-one.vercel.app](https://life-stock-one.vercel.app)**
 
-## Tech Stack
-- **Backend:** Node.js, Express.js, MongoDB, Mongoose
-- **Auth:** JWT, bcryptjs
-- **Upcoming:** React.js, Socket.io, Redis, Whisper API, Google Vision API
+## 💡 What is LifeStock?
+LifeStock is a full-stack prediction market where users set personal life goals and others buy/sell stocks predicting whether those goals will be achieved. Stock prices move in real-time based on community confidence.
 
-## Features
-- JWT Authentication (Register/Login)
-- Goal creation with categories
-- Stock market mechanics (buy/sell shares)
-- AI proof verification (coming soon)
-- Real-time price updates via WebSockets (coming soon)
-- Category-wise leaderboards (coming soon)
+## 🛠 Tech Stack
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React.js, Tailwind CSS, Recharts |
+| Backend | Node.js, Express.js |
+| Database | MongoDB Atlas |
+| Auth | JWT, bcryptjs |
+| Real-time | Socket.io |
+| AI | Goal categorization, Proof verification |
+| Deployment | Vercel + Render |
 
-## Setup
+## ✨ Features
+- 🔐 JWT Authentication (Register/Login)
+- 🎯 Goal creation with AI auto-categorization
+- 📈 Stock market mechanics (buy YES/NO shares)
+- ⚡ Real-time price updates via WebSockets
+- 🤖 AI proof verification system
+- 🏆 Global + category-wise leaderboards
+- 👤 User profiles with transaction history
+- 📊 Live price history charts
+
+## 🚀 Run Locally
+
+### Backend
 ```bash
 cd server
 npm install
 npm run dev
 ```
 
-## API Endpoints
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | /api/auth/register | Register new user |
-| POST | /api/auth/login | Login user |
-| GET | /api/auth/me | Get logged in user |
+### Frontend
+```bash
+cd client
+npm install
+npm start
+```
 
-## Project Status
-🚧 Active Development — Week 1 of 6
-
-## API Endpoints
-
-### Auth
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | /api/auth/register | Register user |
-| POST | /api/auth/login | Login user |
-| GET | /api/auth/me | Get logged in user |
-
-### Goals
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | /api/goals | Create goal |
-| GET | /api/goals | Get all goals |
-| GET | /api/goals/my | Get my goals |
-| GET | /api/goals/:id | Get single goal |
-| DELETE | /api/goals/:id | Delete goal |
-
-### Stock
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | /api/stock/:id/buy | Buy shares |
-| GET | /api/stock/:id | Get stock data |
-| GET | /api/stock/transactions/my | Get my transactions |
-
-### Proof
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | /api/proof/:id/submit | Submit proof |
-| GET | /api/proof/:id | Get proofs for goal |
-| POST | /api/proof/:id/:proofId/flag | Flag proof |
-| POST | /api/proof/:id/:proofId/approve | Approve proof |
+### Environment Variables
+Create `server/.env`:
