@@ -46,3 +46,64 @@ npm start
 
 ### Environment Variables
 Create `server/.env`:
+
+## 📡 API Endpoints
+
+### Auth
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/auth/register | Register user |
+| POST | /api/auth/login | Login user |
+| GET | /api/auth/me | Get logged in user |
+
+### Goals
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/goals | Create goal |
+| GET | /api/goals | Get all goals |
+| GET | /api/goals/my | Get my goals |
+| GET | /api/goals/:id | Get single goal |
+| DELETE | /api/goals/:id | Delete goal |
+
+### Stock Market
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/stock/:id/buy | Buy shares |
+| GET | /api/stock/:id | Get stock data |
+| GET | /api/stock/transactions/my | Get my transactions |
+
+### Proof
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/proof/:id/submit | Submit proof |
+| GET | /api/proof/:id | Get proofs |
+| POST | /api/proof/:id/:proofId/flag | Flag proof |
+| POST | /api/proof/:id/:proofId/approve | Approve proof |
+
+### Rankings
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | /api/ranking/global | Global leaderboard |
+| GET | /api/ranking/category/:cat | Category leaderboard |
+| GET | /api/ranking/me | My ranking |
+| POST | /api/ranking/settle/:id | Settle goal |
+
+### AI
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/ai/categorize | Categorize goal |
+| POST | /api/ai/verify | Verify proof |
+| POST | /api/ai/suggestions | Get goal suggestions |
+
+## 🏗 System Design
+- **Real-time updates** — Socket.io + Redis pub/sub
+- **Stock price algorithm** — buyers/(buyers+sellers) × 100
+- **AI verification** — multi-layer proof checking
+- **Leaderboard** — category + global rankings
+- **Point settlement** — 2x rewards for correct predictions
+
+## 👨‍💻 Built By
+**Yogesh Kumar**
+BTech CSE — Delhi Technological University (DTU)
+
+[![GitHub](https://img.shields.io/badge/GitHub-yogesh--go-blue)](https://github.com/yogesh-go)
