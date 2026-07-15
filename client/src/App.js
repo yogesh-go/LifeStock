@@ -12,18 +12,27 @@ import GoalDetail from './pages/GoalDetail';
 import CreateGoal from './pages/CreateGoal';
 import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
+import Portfolio from './pages/Portfolio';
 
 // Protected route
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={styles.loading}>Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-[#0a0a14] flex items-center justify-center text-[#00d4ff] text-lg font-semibold animate-pulse">
+      Loading...
+    </div>
+  );
   return user ? children : <Navigate to="/login" />;
 };
 
-// Public route — redirect to feed if already logged in
+// Public route
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={styles.loading}>Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-[#0a0a14] flex items-center justify-center text-[#00d4ff] text-lg font-semibold animate-pulse">
+      Loading...
+    </div>
+  );
   return user ? <Navigate to="/feed" /> : children;
 };
 
@@ -38,21 +47,10 @@ function AppRoutes() {
       <Route path="/create" element={<PrivateRoute><CreateGoal /></PrivateRoute>} />
       <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/portfolio" element={<PrivateRoute><Portfolio /></PrivateRoute>} />
     </Routes>
   );
 }
-
-const styles = {
-  loading: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0f0f1a',
-    color: '#00d4ff',
-    fontSize: '18px'
-  }
-};
 
 function App() {
   return (
