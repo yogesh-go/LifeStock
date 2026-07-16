@@ -13,8 +13,8 @@ import CreateGoal from './pages/CreateGoal';
 import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
 import Portfolio from './pages/Portfolio';
+import AIFeatures from './pages/AIFeatures';
 
-// Protected route
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return (
@@ -25,7 +25,6 @@ const PrivateRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" />;
 };
 
-// Public route
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return (
@@ -48,6 +47,7 @@ function AppRoutes() {
       <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       <Route path="/portfolio" element={<PrivateRoute><Portfolio /></PrivateRoute>} />
+      <Route path="/ai" element={<PrivateRoute><AIFeatures /></PrivateRoute>} />
     </Routes>
   );
 }
