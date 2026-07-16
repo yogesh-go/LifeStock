@@ -14,6 +14,8 @@ import Leaderboard from './pages/Leaderboard';
 import Profile from './pages/Profile';
 import Portfolio from './pages/Portfolio';
 import AIFeatures from './pages/AIFeatures';
+import Notifications from './pages/Notifications';
+import Search from './pages/Search';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -48,6 +50,8 @@ function AppRoutes() {
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       <Route path="/portfolio" element={<PrivateRoute><Portfolio /></PrivateRoute>} />
       <Route path="/ai" element={<PrivateRoute><AIFeatures /></PrivateRoute>} />
+      <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
+      <Route path="/search" element={<PrivateRoute><Search /></PrivateRoute>} />
     </Routes>
   );
 }

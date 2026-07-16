@@ -62,16 +62,25 @@ const Dashboard = () => {
       <nav className="flex items-center justify-between px-10 py-4 bg-[#0a0a14]/90 backdrop-blur-md border-b border-[#2a2a3e] sticky top-0 z-50">
         <h1 className="text-xl font-bold text-[#00d4ff]">📈 LifeStock</h1>
         <div className="flex items-center gap-3">
+          <Link to="/search" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">
+            🔍 Search
+          </Link>
           <span className="text-[#ffd700] font-bold text-sm px-3 py-1.5 bg-[#ffd70015] border border-[#ffd700] rounded-full">
             💰 {user?.totalPoints} pts
           </span>
           <Link to="/create" className="bg-[#00d4ff] text-[#0a0a14] px-4 py-2 rounded-lg font-bold text-sm hover:brightness-110 transition-all">
             + Create Goal
           </Link>
-            <Link to="/portfolio" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Portfolio</Link>
-            <Link to="/ai" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">🤖 AI</Link>
-            <Link to="/leaderboard" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Leaderboard</Link>
-            <Link to="/profile" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Profile</Link>
+          <Link to="/portfolio" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Portfolio</Link>
+          <Link to="/ai" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">🤖 AI</Link>
+          <Link to="/leaderboard" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Leaderboard</Link>
+          <Link to="/notifications" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e] relative">
+            🔔
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#00d4ff] text-[#0a0a14] text-xs font-bold rounded-full flex items-center justify-center">
+              3
+            </span>
+          </Link>
+          <Link to="/profile" className="text-gray-400 hover:text-white px-3 py-2 rounded-lg text-sm transition-all hover:bg-[#1a1a2e]">Profile</Link>
           <button onClick={handleLogout} className="text-[#ff4444] border border-[#ff4444] px-3 py-2 rounded-lg text-sm hover:bg-[#ff444415] transition-all">
             Logout
           </button>
